@@ -96,7 +96,7 @@ public class BottleController : MonoBehaviour
             lerpValue = t/timeToRotate;
             angleValue = Mathf.Lerp(0, directionMultiplier * rotationValues[rotationIndex], lerpValue);
             //transform.eulerAngles = new Vector3(0, 0, angleValue);
-            transform.RotateAround(chosenRotationPoint.position,Vector3.forward, lastAngleValue-angleValue);
+            transform.RotateAround(transform.position,Vector3.forward, lastAngleValue-angleValue);
             if(fillAmounts[numberOfColorsInBottle] > FillAmountCurve.Evaluate(angleValue)) {
                 bottleMaskSR.material.SetFloat("_FillAmount", FillAmountCurve.Evaluate(angleValue));
                 bottleControllerRef.FillUp(FillAmountCurve.Evaluate(lastAngleValue)-FillAmountCurve.Evaluate(angleValue));
@@ -126,7 +126,7 @@ public class BottleController : MonoBehaviour
             lerpValue = t/timeToRotate;
             angleValue = Mathf.Lerp(directionMultiplier*rotationValues[rotationIndex], 0, lerpValue);
             //transform.eulerAngles = new Vector3(0, 0, angleValue);
-            transform.RotateAround(chosenRotationPoint.position,Vector3.forward, lastAngleValue-angleValue);
+            transform.RotateAround(transform.position,Vector3.forward, lastAngleValue-angleValue);
             bottleMaskSR.material.SetFloat("_ScaleAndRotationMulti", ScaleAndRotationMultiCurve.Evaluate(angleValue));
             lastAngleValue = angleValue;
             t += Time.deltaTime;
