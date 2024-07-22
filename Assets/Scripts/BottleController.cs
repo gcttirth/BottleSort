@@ -5,6 +5,7 @@ using UnityEngine;
 public class BottleController : MonoBehaviour
 {
     public Color[] bottleColors;
+    public bool[] isHidden;
     public SpriteRenderer bottleMaskSR;
     public AnimationCurve ScaleAndRotationMultiCurve;
     public AnimationCurve FillAmountCurve;
@@ -37,6 +38,10 @@ public class BottleController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Initialize();
+    }
+
+    public void Initialize() {
         UpdateColorsOnShader();
         originalPosition = transform.position;
         bottleMaskSR.material.SetFloat("_FillAmount", fillAmounts[numberOfColorsInBottle]);
@@ -81,7 +86,11 @@ public class BottleController : MonoBehaviour
     void UpdateColorsOnShader() {
         for (int i = 0; i < 4; i++)
         {
-            bottleMaskSR.material.SetColor($"_Color{i+1:00}", bottleColors[i]);
+            if(isHidden[i]) {
+                bottleMaskSR.material.SetColor($"_Color{i+1:00}", Color.black);
+            } else {
+                bottleMaskSR.material.SetColor($"_Color{i+1:00}", bottleColors[i]);
+            }
         }
     }
     public float timeToRotate = 1f;
@@ -241,6 +250,18 @@ public class BottleController : MonoBehaviour
         
         transform.GetComponent<SpriteRenderer>().sortingOrder -= 2;
         bottleMaskSR.sortingOrder -= 2;
+        
+        CheckTopColorHidden();
+    }
+
+    void CheckTopColorHidden() {
+        // Put original color in top color if it was black prior
+        if(numberOfColorsInBottle != 0) {
+            if(isHidden[numberOfColorsInBottle-1]) {
+                isHidden[numberOfColorsInBottle-1] = false;
+                UpdateColorsOnShader(); 
+            }
+        }
     }
 
     IEnumerator SelectBottle(float yOffset = 1f) {
@@ -260,5 +281,15 @@ public class BottleController : MonoBehaviour
 
     public void DropBottle() {
         StartCoroutine(SelectBottle(-0.25f));
+    }
+
+    public void CheckIfBottleIsFullOfOneColor() {
+        if(numberOfColorsInBottle == 4) {
+            if(bottleColors[0].Equals(bottleColors[1]) && bottleColors[1].Equals(bottleColors[2]) && bottleColors[2].Equals(bottleColors[3])) {
+                Debug.Log("Bottle is full of one color");
+                // Instantiate some particle effects on the bottle and disable it to be picked up
+
+            }
+        }
     }
 }

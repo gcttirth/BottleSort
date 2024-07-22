@@ -49,7 +49,7 @@ public class GameController : MonoBehaviour
                             SecondBottle = null;
 
                         } else {
-                            //FirstBottle.DropBottle();
+                            FirstBottle.DropBottle();
                             FirstBottle = null;
                             SecondBottle = null;
                         }

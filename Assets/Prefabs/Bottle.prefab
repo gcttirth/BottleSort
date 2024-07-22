@@ -106,6 +106,7 @@ MonoBehaviour:
   - {r: 0.21568626, g: 0.7647059, b: 0.28846994, a: 1}
   - {r: 0.21568626, g: 0.7647059, b: 0.28846994, a: 1}
   - {r: 0.21568626, g: 0.7647059, b: 0.28846994, a: 1}
+  isHidden: 
   bottleMaskSR: {fileID: 5828781111384152370}
   ScaleAndRotationMultiCurve:
     serializedVersion: 2
