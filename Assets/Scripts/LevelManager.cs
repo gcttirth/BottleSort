@@ -73,7 +73,10 @@ public class LevelManager : MonoBehaviour
         return offsets;
     }
 
-    void StartLevel(int level) {
+    public void StartLevel(int level) {
+        foreach(Transform bottle in this.transform) {
+            Destroy(bottle.gameObject);
+        }
         Bottle[] bottles = levels[level].bottles;
         offsets = new Vector3[bottles.Length];
         offsets =  CalculateOffsets(bottles.Length);
@@ -109,4 +112,5 @@ public class LevelManager : MonoBehaviour
             GameObject confetti = Instantiate(confettiPrefab, this.transform);
         }
     }
+
 }

@@ -4017,3 +4017,28 @@
     "m_Labels": []
 }
 
+{
+    "m_Type": "Normal Vector",
+    "m_Position": {
+        "x": 400,
+        "y": 200
+    },
+    "m_Guid": "new-backface-node",
+    "m_Name": "BackfaceEffect",
+    "m_Inputs": [
+        {
+            "m_Id": "normal",
+            "m_Connection": null
+        },
+        {
+            "m_Id": "frontColor",
+            "m_Connection": "top-color-output-id"
+        }
+    ],
+    "m_Outputs": [
+        {
+            "m_Id": "output",
+            "m_Connection": null
+        }
+    ]
+},
