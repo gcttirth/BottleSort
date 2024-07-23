@@ -15,22 +15,27 @@ public struct Level {
 public class LevelManager : MonoBehaviour
 {
 
+    public static LevelManager instance;
+
     [SerializeField]
     public List<Level> levels;
     public GameObject bottlePrefab;
     public Vector3[] offsets;
+    public GameObject confettiPrefab;
+
+    void Awake() {
+        if(instance == null) {
+            instance = this;
+        } else {
+            Destroy(this.gameObject);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         // Instantiate the first level
         StartLevel(0);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     Vector3[] CalculateOffsets(int numBottles)
@@ -50,7 +55,7 @@ public class LevelManager : MonoBehaviour
         {
             // Calculate offsets for two rows
             int bottlesPerRow = Mathf.CeilToInt(numBottles / 2f);
-            float additionalOffset = (numBottles % 2 == 0) ? 0f : -0.25f;
+            float additionalOffset = (numBottles % 2 == 0) ? 0f : -0.5f;
             float startX = -((bottlesPerRow - 1) * 0.5f);
             for (int i = 0; i < bottlesPerRow; i++)
             {
@@ -83,6 +88,25 @@ public class LevelManager : MonoBehaviour
                 bottleObj.GetComponent<BottleController>().numberOfColorsInBottle = bottle.numberOfColors;
                 bottleObj.GetComponent<BottleController>().Initialize();
            
+        }
+    }
+
+    public void BottleFilledUp(BottleController bottleController) {
+        HapticFeedback.Vibrate(HapticFeedback.successPattern, 0);
+        // Check if all bottles are filled up
+        bool allFilled = true;
+        foreach(Transform bottle in this.transform) {
+            if(bottle.GetComponent<BottleController>().isFilled == false) {
+                if(bottle.GetComponent<BottleController>().numberOfColorsInBottle != 0) {
+                    allFilled = false;
+                    break;
+                }
+            }
+        }
+        if(allFilled) {
+            Debug.Log("Level Completed");
+            // Start confetti particles
+            GameObject confetti = Instantiate(confettiPrefab, this.transform);
         }
     }
 }

@@ -22,12 +22,14 @@ public class BottleController : MonoBehaviour
     public int numberOfTopColorLayers = 1;
 
     public BottleController bottleControllerRef;
-    public bool justThisBottle = false;
     private int numberOfColorsToTransfer = 0;
 
     public Transform leftRotationPoint;
     public Transform rightRotationPoint;
+    public Transform leftPourPoint;
+    public Transform rightPourPoint;
     private Transform chosenRotationPoint;
+    public Transform bottomPoint;
     private float directionMultiplier = 1.0f;
 
     Vector3 originalPosition;
@@ -35,6 +37,9 @@ public class BottleController : MonoBehaviour
     Vector3 endPosition;
 
     float commonTimer = 1f;
+    public GameObject filledParticleEffect;
+    public LineRenderer lineRenderer;
+    public bool isFilled = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,21 +56,7 @@ public class BottleController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && justThisBottle) {
-            UpdateTopColorValues();
-            if(bottleControllerRef.FillBottleCheck(topColor)) {
-                ChooseRotationPointAndDirection();
-                numberOfColorsToTransfer = Mathf.Min(numberOfTopColorLayers, 4-bottleControllerRef.numberOfColorsInBottle);
-                for (int i = 0; i < numberOfColorsToTransfer; i++)
-                {
-                    bottleControllerRef.bottleColors[bottleControllerRef.numberOfColorsInBottle+i] = topColor;
-                }
-                bottleControllerRef.UpdateColorsOnShader();
 
-            }
-            CalculateRotationIndex(4-bottleControllerRef.numberOfColorsInBottle);
-            StartCoroutine(RotateBottle());
-        }
     }
 
     public void StartColorTransfer() {
@@ -106,7 +97,17 @@ public class BottleController : MonoBehaviour
             angleValue = Mathf.Lerp(0, directionMultiplier * rotationValues[rotationIndex], lerpValue);
             //transform.eulerAngles = new Vector3(0, 0, angleValue);
             transform.RotateAround(transform.position,Vector3.forward, lastAngleValue-angleValue);
-            if(fillAmounts[numberOfColorsInBottle] > FillAmountCurve.Evaluate(angleValue)) {
+            Vector3 rotationPointPosition = (chosenRotationPoint == rightRotationPoint) ? rightPourPoint.position : leftPourPoint.position;
+
+            if(fillAmounts[numberOfColorsInBottle] > FillAmountCurve.Evaluate(angleValue)+0.005f) {
+                if(lineRenderer.enabled == false) {
+                    lineRenderer.startColor = topColor;
+                    lineRenderer.endColor = topColor;
+                    lineRenderer.SetPosition(0, rotationPointPosition);
+                    lineRenderer.SetPosition(1, bottleControllerRef.bottomPoint.position);
+                    lineRenderer.enabled = true;
+                }
+                lineRenderer.SetPosition(0, rotationPointPosition);
                 bottleMaskSR.material.SetFloat("_FillAmount", FillAmountCurve.Evaluate(angleValue));
                 bottleControllerRef.FillUp(FillAmountCurve.Evaluate(lastAngleValue)-FillAmountCurve.Evaluate(angleValue));
             }
@@ -121,6 +122,8 @@ public class BottleController : MonoBehaviour
         bottleMaskSR.material.SetFloat("_ScaleAndRotationMulti", ScaleAndRotationMultiCurve.Evaluate(angleValue));
         numberOfColorsInBottle -= numberOfColorsToTransfer;
         bottleControllerRef.numberOfColorsInBottle += numberOfColorsToTransfer;
+        bottleControllerRef.CheckIfBottleIsFullOfOneColor();
+        lineRenderer.enabled = false;
         StartCoroutine(RotateBottleBack());
     }
 
@@ -283,12 +286,19 @@ public class BottleController : MonoBehaviour
         StartCoroutine(SelectBottle(-0.25f));
     }
 
+    public void EnableBottle(bool enable) {
+        this.gameObject.GetComponent<BoxCollider2D>().enabled = enable;
+    }
+
     public void CheckIfBottleIsFullOfOneColor() {
         if(numberOfColorsInBottle == 4) {
             if(bottleColors[0].Equals(bottleColors[1]) && bottleColors[1].Equals(bottleColors[2]) && bottleColors[2].Equals(bottleColors[3])) {
                 Debug.Log("Bottle is full of one color");
-                // Instantiate some particle effects on the bottle and disable it to be picked up
-
+                isFilled = true;
+                GameObject particleEffect = Instantiate(filledParticleEffect, bottomPoint.position, Quaternion.identity);
+                Destroy(particleEffect, 3f);
+                EnableBottle(false);
+                LevelManager.instance.BottleFilledUp(this);
             }
         }
     }

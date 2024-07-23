@@ -29,7 +29,11 @@ public class GameController : MonoBehaviour
                 if(FirstBottle == null) {
                     // FirstBottle picked up
                     FirstBottle = hit.collider.GetComponent<BottleController>();
-                    FirstBottle.PickUpBottle();
+                    if(FirstBottle.numberOfColorsInBottle == 0 || FirstBottle.isFilled) {
+                        FirstBottle = null;
+                    } else {
+                        FirstBottle.PickUpBottle();
+                    }
                 } else {
                     if(FirstBottle == hit.collider.GetComponent<BottleController>()) {
                         FirstBottle.DropBottle();
