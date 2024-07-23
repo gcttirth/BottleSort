@@ -52,7 +52,6 @@ public class BottleController : MonoBehaviour
         bottleMaskSR.material.SetFloat("_FillAmount", fillAmounts[numberOfColorsInBottle]);
         UpdateTopColorValues();
     }
-
     // Update is called once per frame
     void Update()
     {

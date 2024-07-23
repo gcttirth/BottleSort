@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 [System.Serializable]
 public struct Bottle {
     public Color[] colors;
@@ -38,10 +39,12 @@ public class LevelManager : MonoBehaviour
         StartLevel(0);
     }
 
+    
+
     Vector3[] CalculateOffsets(int numBottles)
     {
         Vector3[] offsets = new Vector3[numBottles];
-
+        float offsetX = 0.75f; 
         if (numBottles <= 4)
         {
             // Calculate offsets for a single row
@@ -55,18 +58,18 @@ public class LevelManager : MonoBehaviour
         {
             // Calculate offsets for two rows
             int bottlesPerRow = Mathf.CeilToInt(numBottles / 2f);
-            float additionalOffset = (numBottles % 2 == 0) ? 0f : -0.5f;
+            float additionalOffset = (numBottles % 2 == 0) ? (0.75f/2) : 0;
             float startX = -((bottlesPerRow - 1) * 0.5f);
             for (int i = 0; i < bottlesPerRow; i++)
             {
-                offsets[i] = new Vector3(startX + i + additionalOffset, 1f, 0f);
+                offsets[i] = new Vector3(startX + i*offsetX , 1f, 0f);
             }
             for (int i = 0; i < bottlesPerRow; i++)
             {
                 if(i+bottlesPerRow >= numBottles) {
                     break;
                 }
-                offsets[i + bottlesPerRow] = new Vector3(startX + i, -1f, 0f);
+                offsets[i + bottlesPerRow] = new Vector3(startX + i*offsetX + additionalOffset, -1f, 0f);
             }
         }
 
@@ -85,12 +88,10 @@ public class LevelManager : MonoBehaviour
             // Instantiate bottle
             GameObject bottleObj = Instantiate(bottlePrefab,this.transform);
             bottleObj.transform.position += offsets[i];
-
-                bottleObj.GetComponent<BottleController>().bottleColors = bottle.colors;
-                bottleObj.GetComponent<BottleController>().isHidden = bottle.isHidden;
-                bottleObj.GetComponent<BottleController>().numberOfColorsInBottle = bottle.numberOfColors;
-                bottleObj.GetComponent<BottleController>().Initialize();
-           
+            bottleObj.GetComponent<BottleController>().bottleColors = bottle.colors;
+            bottleObj.GetComponent<BottleController>().isHidden = bottle.isHidden;
+            bottleObj.GetComponent<BottleController>().numberOfColorsInBottle = bottle.numberOfColors;
+            bottleObj.GetComponent<BottleController>().Initialize();
         }
     }
 
@@ -108,8 +109,16 @@ public class LevelManager : MonoBehaviour
         }
         if(allFilled) {
             Debug.Log("Level Completed");
-            // Start confetti particles
-            GameObject confetti = Instantiate(confettiPrefab, this.transform);
+            StartCoroutine(StartWinningCelebration());
+        }
+    }
+
+    IEnumerator StartWinningCelebration() {
+        // Instantiate confettiPrefab at random world positions around the center of screen
+        for(int i=0; i<5; i++) {
+            Vector3 randomPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), 0f);
+            Instantiate(confettiPrefab, randomPosition, Quaternion.identity);
+            yield return new WaitForSeconds(0.3f);
         }
     }
 
