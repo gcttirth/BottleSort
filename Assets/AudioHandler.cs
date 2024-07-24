@@ -69,6 +69,7 @@ public class AudioHandler : MonoBehaviour
 
     private void PlaySound(AudioSource audioSource)
     {
+        audioSource.Stop();
         if (audioSource != null && !audioSource.isPlaying)
         {
             audioSource.Play();

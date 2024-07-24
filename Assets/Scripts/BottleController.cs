@@ -99,6 +99,8 @@ public class BottleController : MonoBehaviour
 
         float lastAngleValue = 0;
 
+        float timeTaken = 0;
+
         while (t < timeToRotate)
         {
             lerpValue = t / timeToRotate;
@@ -127,7 +129,9 @@ public class BottleController : MonoBehaviour
             t += Time.deltaTime * RotationSpeedMultiCurve.Evaluate(angleValue);
             lastAngleValue = angleValue;
             yield return new WaitForEndOfFrame();
+            timeTaken += Time.deltaTime;
         }
+        Debug.Log("Time taken for filling = " + timeTaken);
         angleValue = directionMultiplier * rotationValues[rotationIndex];
         //transform.eulerAngles = new Vector3(0, 0, angleValue);
         bottleMaskSR.material.SetFloat("_FillAmount", FillAmountCurve.Evaluate(angleValue));
