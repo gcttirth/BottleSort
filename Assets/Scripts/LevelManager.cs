@@ -58,8 +58,13 @@ public class LevelManager : MonoBehaviour
         {
             // Calculate offsets for two rows
             int bottlesPerRow = Mathf.CeilToInt(numBottles / 2f);
-            float additionalOffset = (numBottles % 2 == 0) ? (0.75f/2) : 0;
+            float additionalOffset = (numBottles % 2 != 0) ? (0.75f/2) : 0;
             float startX = -((bottlesPerRow - 1) * 0.5f);
+            if(true || bottlesPerRow%2 != 0) {
+                startX = -((bottlesPerRow - 1) * 0.5f) * 0.75f;
+            } else {
+                //
+            }
             for (int i = 0; i < bottlesPerRow; i++)
             {
                 offsets[i] = new Vector3(startX + i*offsetX , 1f, 0f);
@@ -87,7 +92,7 @@ public class LevelManager : MonoBehaviour
             Bottle bottle = bottles[i];
             // Instantiate bottle
             GameObject bottleObj = Instantiate(bottlePrefab,this.transform);
-            bottleObj.transform.position += offsets[i];
+            bottleObj.transform.position = offsets[i];
             bottleObj.GetComponent<BottleController>().bottleColors = bottle.colors;
             bottleObj.GetComponent<BottleController>().isHidden = bottle.isHidden;
             bottleObj.GetComponent<BottleController>().numberOfColorsInBottle = bottle.numberOfColors;

@@ -978,7 +978,7 @@ MonoBehaviour:
       - {r: 0.21568626, g: 0.23345402, b: 0.7647059, a: 1}
       - {r: 0.21568626, g: 0.23345402, b: 0.7647059, a: 1}
       - {r: 0.7647059, g: 0.21568626, b: 0.26494914, a: 1}
-      isHidden: 00000000
+      isHidden: 00010100
       numberOfColors: 4
     - colors:
       - {r: 0.21568626, g: 0.7647059, b: 0.28846994, a: 1}
@@ -1029,7 +1029,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.25, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1627167603
