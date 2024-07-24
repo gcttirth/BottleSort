@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
+
 [System.Serializable]
 public struct Bottle {
     public Color[] colors;
@@ -17,7 +19,6 @@ public class LevelManager : MonoBehaviour
 {
 
     public static LevelManager instance;
-
     [SerializeField]
     public List<Level> levels;
     public GameObject bottlePrefab;
@@ -93,15 +94,19 @@ public class LevelManager : MonoBehaviour
             // Instantiate bottle
             GameObject bottleObj = Instantiate(bottlePrefab,this.transform);
             bottleObj.transform.position = offsets[i];
-            bottleObj.GetComponent<BottleController>().bottleColors = bottle.colors;
-            bottleObj.GetComponent<BottleController>().isHidden = bottle.isHidden;
-            bottleObj.GetComponent<BottleController>().numberOfColorsInBottle = bottle.numberOfColors;
+            BottleController bottleController = bottleObj.GetComponent<BottleController>();
+            bottleController.bottleColors = new Color[bottle.colors.Length];
+            System.Array.Copy(bottle.colors, bottleController.bottleColors, bottle.colors.Length);
+            bottleController.isHidden = new bool[bottle.isHidden.Length];
+            System.Array.Copy(bottle.isHidden, bottleController.isHidden, bottle.isHidden.Length);
+            bottleController.numberOfColorsInBottle = bottle.numberOfColors;
             bottleObj.GetComponent<BottleController>().Initialize();
         }
     }
 
     public void BottleFilledUp(BottleController bottleController) {
-        HapticFeedback.Vibrate(HapticFeedback.successPattern, 0);
+        AudioHandler.instance.PlayAudio(AudioType.bottleFilledUp);
+        HapticFeedback.TriggerHaptic(HapticFeedback.successPattern, -1);
         // Check if all bottles are filled up
         bool allFilled = true;
         foreach(Transform bottle in this.transform) {
@@ -121,10 +126,13 @@ public class LevelManager : MonoBehaviour
     IEnumerator StartWinningCelebration() {
         // Instantiate confettiPrefab at random world positions around the center of screen
         for(int i=0; i<5; i++) {
+            HapticFeedback.TriggerHaptic(HapticFeedback.shortPattern, -1);
+            AudioHandler.instance.PlayAudio(AudioType.confettiPop);
             Vector3 randomPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), 0f);
             Instantiate(confettiPrefab, randomPosition, Quaternion.identity);
             yield return new WaitForSeconds(0.3f);
         }
+        HapticFeedback.TriggerHaptic(HapticFeedback.longPattern, -1);
     }
 
 }

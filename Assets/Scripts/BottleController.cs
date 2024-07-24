@@ -77,7 +77,6 @@ public class BottleController : MonoBehaviour
 
     void UpdateColorsOnShader()
     {
-        Color prevHiddenColor;
 
         for (int i = 0; i < 4; i++)
         {
@@ -112,6 +111,8 @@ public class BottleController : MonoBehaviour
             {
                 if (lineRenderer.enabled == false)
                 {
+                    HapticFeedback.TriggerHaptic(HapticFeedback.shortPattern, -1);
+                    AudioHandler.instance.PlayAudio(AudioType.liquidPour);
                     lineRenderer.startColor = topColor;
                     lineRenderer.endColor = topColor;
                     lineRenderer.SetPosition(0, rotationPointPosition);
@@ -135,6 +136,7 @@ public class BottleController : MonoBehaviour
         bottleControllerRef.numberOfColorsInBottle += numberOfColorsToTransfer;
         bottleControllerRef.CheckIfBottleIsFullOfOneColor();
         lineRenderer.enabled = false;
+        AudioHandler.instance.StopAudio(AudioType.liquidPour);
         StartCoroutine(RotateBottleBack());
     }
 
@@ -368,11 +370,15 @@ public class BottleController : MonoBehaviour
     }
     public void PickUpBottle()
     {
+        HapticFeedback.TriggerHaptic(HapticFeedback.shortPattern, -1);
+        AudioHandler.instance.PlayAudio(AudioType.bottlePickup);
         StartCoroutine(SelectBottle(0.25f));
     }
 
     public void DropBottle()
     {
+        HapticFeedback.TriggerHaptic(HapticFeedback.shortPattern, -1);
+        AudioHandler.instance.PlayAudio(AudioType.bottleDrop);
         StartCoroutine(SelectBottle(-0.25f));
     }
 
