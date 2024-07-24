@@ -4,7 +4,7 @@ using UnityEngine;
 public class HapticFeedback : MonoBehaviour {
     public static readonly long[] successPattern = { 0, 100, 25 , 50, 10, 20 };
     public static readonly long[] shortPattern = { 0, 10 };
-    public static readonly long[] longPattern = { 0, 200, 50, 200, 50, 200 };
+    public static readonly long[] longPattern = { 0, 100, 50, 100, 25, 50 };
 
     public static void TriggerHaptic(long[] pattern, int repeat)
     {

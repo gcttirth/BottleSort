@@ -132,6 +132,7 @@ public class LevelManager : MonoBehaviour
             Instantiate(confettiPrefab, randomPosition, Quaternion.identity);
             yield return new WaitForSeconds(0.3f);
         }
+        AudioHandler.instance.PlayAudio(AudioType.levelComplete);
         HapticFeedback.TriggerHaptic(HapticFeedback.longPattern, -1);
     }
 
